@@ -18,7 +18,7 @@ function App() {
     keyElement.classList.add("clicked");
     setTimeout(() => {
       keyElement.classList.remove("clicked");
-    }, 200);
+    }, 100);
 
     if (key.trim() === "Ctrl" || key.trim() === "Win" || key.trim() === "Alt") {
       return;
@@ -29,27 +29,26 @@ function App() {
     } else if (key === "Space") {
       setTappedKeys(prev => (prev + " "));
     } else if (key === "CapsLock") {
-      const capased = shift
-      
       setShift(prev => ({ ...prev, caps: !prev.caps }));
     } else if (key.trim() === "Shift") {
       setShift(prev => ({ ...prev, shift: true }));
     } else if (key === "Backspace") {
       setTappedKeys(prevKeys => prevKeys.slice(0, -1));
     } else {
-      if (shift.shift === true) {
-        setTappedKeys(prevKeys => prevKeys + key.toUpperCase());
-        setShift(prevShift => ({ ...prevShift, shift: false }));
-      } else if (shift.caps === true) {
+      if (shift.shift === true || shift.caps === true) {
         setTappedKeys(prevKeys => prevKeys + key.toUpperCase());
       } else {
         setTappedKeys(prev => prev + key);
+      }
+      if (shift.shift === true) {
+        setShift(prevShift => ({ ...prevShift, shift: false }));
       }
     }
   }
 
   return (
     <>
+
       <textarea disabled type="text" value={tappedKeys} />
       <div className="outerkey">
         {keyboardKeys.map((row, rowIndex) => (
@@ -62,7 +61,7 @@ function App() {
                 data-size={key.length > 5 ? 3 : 1}
                 data-key={key}
               >
-                {key}
+                {key === "CapsLock" || key === "Shift" ? key : (shift.shift || shift.caps) ? key.toUpperCase() : key.toLowerCase()}
               </div>
             ))}
           </div>
